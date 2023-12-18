@@ -1,6 +1,6 @@
 package com.derrick.demo.controller;
 
-import com.derrick.demo.exception.InvalidOperationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.derrick.demo.model.DoMathRequest;
-import com.derrick.demo.model.MathResponse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -19,13 +18,20 @@ public class MathControllerEndToEndTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     void givenTwoNumbers_whenAdded_Returns_Sum() throws Exception {
-        String doMathRequestJSON = "{ \\\"operand1\\\": 5.0, \\\"operand2\\\": 4.0, \\\"operation\\\": \\\"+\\\" }";
+        DoMathRequest doMathRequest = new DoMathRequest();
+        doMathRequest.setOperand1(5.0);
+        doMathRequest.setOperand2(4.0);
+        doMathRequest.setOperation("+");
 
+        // perform an HTTP post request and validate the response
         mockMvc.perform(MockMvcRequestBuilders.post("/api/math/doMath")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(doMathRequestJSON))
+                        .content(objectMapper.writeValueAsString(doMathRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.calcResponse").value(9.0));
     }
