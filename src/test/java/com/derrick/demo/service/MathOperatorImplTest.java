@@ -3,7 +3,6 @@ package com.derrick.demo.service;
 import com.derrick.demo.exception.InvalidOperationException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.testng.Assert;
 
 public class MathOperatorImplTest {
     private final MathOperator mathOperator = new MathOperatorImpl();
